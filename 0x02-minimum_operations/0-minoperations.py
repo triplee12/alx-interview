@@ -2,9 +2,10 @@
 """Minimum operations."""
 
 import math
+from typing import List
 
 
-def minOperations(n) -> int:
+def minOperations(n: int) -> int:
     """
     Minimum operations.
 
@@ -17,7 +18,7 @@ def minOperations(n) -> int:
         return 0
 
     # Find factors of n
-    factors = []
+    factors: List[int] = []
     for i in range(2, int(math.sqrt(n)) + 1):
         while n % i == 0:
             factors.append(i)
