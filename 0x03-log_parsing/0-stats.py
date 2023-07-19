@@ -2,46 +2,37 @@
 """Log parsing."""
 
 import sys
-from collections import defaultdict
 
-# Initialize variables
-total_file_size = 0
-status_code_count = defaultdict(int)
-line_count = 0
+cache = {
+    '200': 0, '301': 0, '400': 0, '401': 0,
+    '403': 0, '404': 0, '405': 0, '500': 0
+}
+total_size = 0
+counter = 0
 
 try:
-    # Read input line by line from stdin
     for line in sys.stdin:
-        line = line.strip()
-        line = " ".join(line.split()[4:])
+        line_list = line.split(" ")
+        if len(line_list) > 4:
+            code = line_list[-2]
+            size = int(line_list[-1])
+            if code in cache.keys():
+                cache[code] += 1
+            total_size += size
+            counter += 1
 
-        # Check if the line matches the expected format
-        if line.startswith('"GET /projects/260 HTTP/1.1"'):
-            parts = line.split()
+        if counter == 10:
+            counter = 0
+            print('File size: {}'.format(total_size))
+            for key, value in sorted(cache.items()):
+                if value != 0:
+                    print('{}: {}'.format(key, value))
 
-            # Extract file size and status code
-            file_size = int(parts[-1])
-            status_code = parts[-2]
-
-            # Update metrics
-            total_file_size += file_size
-            status_code_count[status_code] += 1
-
-            line_count += 1
-
-            # Check if 10 lines have been processed
-            if line_count % 10 == 0:
-                # Print statistics
-                print("Total file size:", total_file_size)
-                for code in sorted(status_code_count.keys()):
-                    print(code + ":", status_code_count[code])
-                print()
-
-    # Print final statistics
-    print("Total file size:", total_file_size)
-    for code in sorted(status_code_count.keys()):
-        print(code + ":", status_code_count[code])
-
-except KeyboardInterrupt:
-    # Handle keyboard interruption (CTRL + C)
+except KeyboardInterrupt as err:
     pass
+
+finally:
+    print('File size: {}'.format(total_size))
+    for key, value in sorted(cache.items()):
+        if value != 0:
+            print('{}: {}'.format(key, value))
