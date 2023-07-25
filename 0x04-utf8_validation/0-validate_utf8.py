@@ -14,17 +14,34 @@ def validUTF8(data: List[int]) -> bool:
     Returns:
         bool: True if the string is valid UTF string, otherwise False
     """
-    # valid = "".join([chr(x) for x in data]).encode("utf-8")
-    # if valid.decode("utf-8"):
-    #     print(valid)
-    #     return True
-    # print(valid)
-    # return False
-    valid = []
+    number_bytes = 0
+
+    mask_1 = 1 << 7
+    mask_2 = 1 << 6
+
     for i in data:
-        if i >= 256:
-            valid.append(False)
-        valid.append(True)
-    if False in valid:
-        return False
-    return True
+
+        mask_byte = 1 << 7
+
+        if number_bytes == 0:
+
+            while mask_byte & i:
+                number_bytes += 1
+                mask_byte = mask_byte >> 1
+
+            if number_bytes == 0:
+                continue
+
+            if number_bytes == 1 or number_bytes > 4:
+                return False
+
+        else:
+            if not (i & mask_1 and not (i & mask_2)):
+                return False
+
+        number_bytes -= 1
+
+    if number_bytes == 0:
+        return True
+
+    return False
