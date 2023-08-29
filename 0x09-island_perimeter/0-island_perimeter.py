@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """Island Perimeter."""
 
 from typing import List
