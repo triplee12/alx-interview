@@ -1,10 +1,8 @@
 #!/usr/bin/python3
 """Island Perimeter."""
 
-from typing import List
 
-
-def island_perimeter(grid: List) -> int:
+def island_perimeter(grid):
     """
     Island perimeter.
 
@@ -13,7 +11,7 @@ def island_perimeter(grid: List) -> int:
     Returns:
         Returns int, the number of the perimeter of the island.
     """
-    perimeter: int = 0
+    perimeter = 0
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
